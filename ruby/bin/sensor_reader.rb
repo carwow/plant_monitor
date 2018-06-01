@@ -36,8 +36,9 @@ def read_sensors(serial)
   if command == 't'
     r = 1023.0 / (val - 1.0)
     r = R0 * r
-    temperature = 1.0 / (Math.log10(r / R0) / B + 1 / 298.15) - 273.15
-    output[:temperature] = temperature
+    celsius = 1.0 / (Math.log10(r / R0) / B + 1 / 298.15) - 273.15
+
+    output[:temperature] = celsius
   elsif command == 'l'
     output[:light] = val
   elsif command == 'm'
@@ -49,11 +50,13 @@ end
 
 loop do
   stats = read_sensors(s)
-  puts stats
+  unless stats.empty?
+    puts stats
 
-  slack.ping('too cold') if stats.fetch(:temperature, MIN_TEMPERATURE + 1) < MIN_TEMPERATURE
-  slack.ping('more water') if stats.fetch(:moisture, MIN_MOISTURE + 1) < MIN_MOISTURE
-  slack.ping('too dark') if stats.fetch(:light, MIN_LIGHT + 1) < MIN_LIGHT
+    slack.ping('too cold') if stats.fetch(:temperature, MIN_TEMPERATURE + 1) < MIN_TEMPERATURE
+    slack.ping('more water') if stats.fetch(:moisture, MIN_MOISTURE + 1) < MIN_MOISTURE
+    slack.ping('too dark') if stats.fetch(:light, MIN_LIGHT + 1) < MIN_LIGHT
+  end
 
   sleep(0.1)
 end
