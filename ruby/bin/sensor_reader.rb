@@ -6,7 +6,7 @@ MIN_MOISTURE = 500
 MIN_LIGHT = 500
 SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
 SLACK_CHANNEL = 'greenhouse'
-SLCAK_USERNAME = ''
+SLACK_USERNAME = ''
 
 ports = Dir.glob('/dev/cu.usbmodem*')
 if ports.size != 1
@@ -18,7 +18,7 @@ s = SerialPort.new(ports[0], 9600, 8, 1, SerialPort::NONE)
 
 slack = Slack::Notifier.new SLACK_WEBHOOK_URL do
   defaults channel: SLACK_CHANNEL,
-           username: SLCAK_USERNAME
+           username: SLACK_USERNAME
 end
 
 def read_sensors(serial)
