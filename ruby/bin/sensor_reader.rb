@@ -1,7 +1,7 @@
 require 'serialport'
 require 'slack-notifier'
 
-MIN_TEMPERATURE = 550
+MIN_TEMPERATURE = 18.0
 MIN_MOISTURE = 1000
 MIN_LIGHT = 500
 SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
@@ -22,6 +22,9 @@ slack = Slack::Notifier.new SLACK_WEBHOOK_URL do
            username: SLACK_USERNAME
 end
 
+B = 4275
+R0 = 100_000
+
 def read_sensors(serial)
   output = {}
   command = serial.read(1)
@@ -31,7 +34,10 @@ def read_sensors(serial)
   val = serial.read(length.to_i).to_i
 
   if command == 't'
-    output[:temperature] = val
+    r = 1023.0 / (val - 1.0)
+    r = R0 * r
+    temperature = 1.0 / (Math.log10(r / R0) / B + 1 / 298.15) - 273.15
+    output[:temperature] = temperature
   elsif command == 'l'
     output[:light] = val
   elsif command == 'm'
