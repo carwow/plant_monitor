@@ -53,9 +53,9 @@ loop do
   unless stats.empty?
     puts stats
 
-    slack.ping('too cold') if stats.fetch(:temperature, MIN_TEMPERATURE + 1) < MIN_TEMPERATURE
-    slack.ping('more water') if stats.fetch(:moisture, MIN_MOISTURE + 1) < MIN_MOISTURE
-    slack.ping('too dark') if stats.fetch(:light, MIN_LIGHT + 1) < MIN_LIGHT
+    slack.ping("I'm feeling too cold") if stats.fetch(:temperature, MIN_TEMPERATURE + 1) < MIN_TEMPERATURE
+    slack.ping("I need some water") if stats.fetch(:moisture, MIN_MOISTURE + 1) < MIN_MOISTURE
+    slack.ping("I need more light") if stats.fetch(:light, MIN_LIGHT + 1) < MIN_LIGHT
   end
 
   sleep(0.1)
