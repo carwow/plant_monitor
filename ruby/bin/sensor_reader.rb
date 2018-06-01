@@ -42,6 +42,7 @@ end
 
 loop do
   stats = read_sensors(s)
+  puts stats
 
   slack.ping('too cold') if stats.fetch(:temperature, MIN_TEMPERATURE + 1) < MIN_TEMPERATURE
   slack.ping('more water') if stats.fetch(:moisture, MIN_MOISTURE + 1) < MIN_MOISTURE
