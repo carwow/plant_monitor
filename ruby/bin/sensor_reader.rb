@@ -2,11 +2,11 @@ require 'serialport'
 require 'slack-notifier'
 
 MIN_TEMPERATURE = 550
-MIN_MOISTURE = 500
+MIN_MOISTURE = 1000
 MIN_LIGHT = 500
 SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
 SLACK_CHANNEL = 'greenhouse'
-SLCAK_USERNAME = ''
+SLACK_USERNAME = 'shelly'
 
 ports = Dir.glob('/dev/cu.usbmodem*')
 if ports.size != 1
@@ -18,7 +18,7 @@ s = SerialPort.new(ports[0], 9600, 8, 1, SerialPort::NONE)
 
 slack = Slack::Notifier.new SLACK_WEBHOOK_URL do
   defaults channel: SLACK_CHANNEL,
-           username: SLCAK_USERNAME
+           username: SLACK_USERNAME
 end
 
 def read_sensors(serial)
@@ -43,10 +43,10 @@ end
 loop do
   stats = read_sensors(s)
 
-  slack.ping('too cold') if stats.fetch(:temperature, 9999) < MIN_TEMPERATURE
-#  slack.ping('water') if stats[:moisture] < MIN_TEMPERATURE
-  #slack.ping('more light') if stats[:light] < MIN_TEMPERATURE
+  slack.ping('too cold') if stats.fetch(:temperature, MIN_TEMPERATURE + 1) < MIN_TEMPERATURE
+  slack.ping('more water') if stats.fetch(:moisture, MIN_MOISTURE + 1) < MIN_MOISTURE
+  slack.ping('too dark') if stats.fetch(:light, MIN_LIGHT + 1) < MIN_LIGHT
 
-  sleep(0.5)
+  sleep(0.1)
 end
 

@@ -11,6 +11,7 @@ const int pinTemp = A1;
 const int ledRed = 4;
 const int ledGreen = 5;
 const int ledBlue = 6;
+const int pinMoisture = A2;
 
 void setup() {
   Serial.begin(9600);
@@ -22,6 +23,7 @@ void setup() {
   pinMode(ledRed, OUTPUT);
   pinMode(ledGreen, OUTPUT);
   pinMode(ledBlue, OUTPUT);
+  pinMode(pinMoisture, INPUT);
 
   digitalWrite(ledRed, LOW);
   digitalWrite(ledGreen, LOW);
@@ -32,14 +34,13 @@ void setup() {
 
 void loop() {
   int lightVal = analogRead(pinLight);
-  lcd.clear();
-  
+  int tempVal = analogRead(pinTemp);
+  int moistVal = analogRead(pinMoisture);
+
+  lcd.clear();    
   lcd.setCursor(0, 0);  
   lcd.print("light ");
   lcd.print(lightVal);
-
-  int tempVal = analogRead(pinTemp);
-  
   lcd.setCursor(0, 1);  
   lcd.print("temperature ");
   lcd.print(tempVal);
@@ -54,10 +55,15 @@ void loop() {
   Serial.write("l"); 
   Serial.write(itoa(strlen(lightStr), len, 10)); 
   Serial.write(lightStr); 
+  
+  char *moistStr = itoa(moistVal, str, 10);
+  Serial.write("m"); 
+  Serial.write(itoa(strlen(moistStr), len, 10)); 
+  Serial.write(moistStr);
 
   digitalWrite(ledRed, tempVal > 500 ? HIGH : LOW);  
   digitalWrite(ledGreen, lightVal > 500 ? HIGH : LOW);
-  digitalWrite(ledBlue, HIGH);
+  digitalWrite(ledBlue,moistVal >1000 ? HIGH : LOW);
   
   delay(5000);
 }
