@@ -8,9 +8,10 @@ SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/T0C182TH9/BAZU74KS6/GOvcnG
 SLACK_CHANNEL = 'greenhouse'
 SLACK_USERNAME = 'shelly'
 
-ports = Dir.glob('/dev/cu.usbmodem*')
+port = ENV.fetch('PORT', 'cu.usbmodem*')
+ports = Dir.glob("/dev/#{port}")
 if ports.size != 1
-  printf("did not found right /dev/cu.usbmodem* serial")
+  printf("did not found right /dev/#{port} serial")
   exit(1)
 end
 
