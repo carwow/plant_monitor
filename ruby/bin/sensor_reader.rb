@@ -1,9 +1,9 @@
 require 'serialport'
 require 'slack-notifier'
 
-MIN_TEMPERATURE = 18.0
-MIN_MOISTURE = 1000
-MIN_LIGHT = 500
+MIN_TEMPERATURE = ENV.fetch('MIN_TEMP', "18.0").to_f
+MIN_MOISTURE = ENV.fetch('MIN_MOISTURE', "1000").to_i
+MIN_LIGHT = ENV.fetch('MIN_LIGHT', "500").to_i
 SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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'
 SLACK_CHANNEL = 'greenhouse'
 SLACK_USERNAME = 'shelly'
@@ -60,4 +60,3 @@ loop do
 
   sleep(0.1)
 end
-
